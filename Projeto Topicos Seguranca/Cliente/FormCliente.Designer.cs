@@ -30,20 +30,12 @@ namespace Cliente
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCliente));
-            this.richTextBoxChat = new System.Windows.Forms.RichTextBox();
             this.textBoxMensagens = new System.Windows.Forms.TextBox();
-            this.Enviar = new System.Windows.Forms.Button();
+            this.buttonEnviar = new System.Windows.Forms.Button();
             this.buttonFicheiros = new System.Windows.Forms.Button();
             this.buttonSair = new System.Windows.Forms.Button();
+            this.listBoxChat = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
-            // 
-            // richTextBoxChat
-            // 
-            this.richTextBoxChat.Location = new System.Drawing.Point(27, 22);
-            this.richTextBoxChat.Name = "richTextBoxChat";
-            this.richTextBoxChat.Size = new System.Drawing.Size(473, 311);
-            this.richTextBoxChat.TabIndex = 0;
-            this.richTextBoxChat.Text = "";
             // 
             // textBoxMensagens
             // 
@@ -52,15 +44,16 @@ namespace Cliente
             this.textBoxMensagens.Size = new System.Drawing.Size(473, 23);
             this.textBoxMensagens.TabIndex = 1;
             // 
-            // Enviar
+            // buttonEnviar
             // 
-            this.Enviar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.Enviar.Location = new System.Drawing.Point(63, 370);
-            this.Enviar.Name = "Enviar";
-            this.Enviar.Size = new System.Drawing.Size(180, 30);
-            this.Enviar.TabIndex = 2;
-            this.Enviar.Text = "Enviar";
-            this.Enviar.UseVisualStyleBackColor = true;
+            this.buttonEnviar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.buttonEnviar.Location = new System.Drawing.Point(63, 370);
+            this.buttonEnviar.Name = "buttonEnviar";
+            this.buttonEnviar.Size = new System.Drawing.Size(180, 30);
+            this.buttonEnviar.TabIndex = 2;
+            this.buttonEnviar.Text = "Enviar";
+            this.buttonEnviar.UseVisualStyleBackColor = true;
+            this.buttonEnviar.Click += new System.EventHandler(this.Enviar_Click);
             // 
             // buttonFicheiros
             // 
@@ -81,30 +74,43 @@ namespace Cliente
             this.buttonSair.TabIndex = 4;
             this.buttonSair.Text = "Sair";
             this.buttonSair.UseVisualStyleBackColor = true;
+            this.buttonSair.Click += new System.EventHandler(this.buttonSair_Click);
+            // 
+            // listBoxChat
+            // 
+            this.listBoxChat.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.listBoxChat.FormattingEnabled = true;
+            this.listBoxChat.ItemHeight = 21;
+            this.listBoxChat.Location = new System.Drawing.Point(27, 12);
+            this.listBoxChat.Name = "listBoxChat";
+            this.listBoxChat.SelectionMode = System.Windows.Forms.SelectionMode.None;
+            this.listBoxChat.Size = new System.Drawing.Size(473, 319);
+            this.listBoxChat.TabIndex = 5;
             // 
             // FormCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(531, 405);
+            this.Controls.Add(this.listBoxChat);
             this.Controls.Add(this.buttonSair);
             this.Controls.Add(this.buttonFicheiros);
-            this.Controls.Add(this.Enviar);
+            this.Controls.Add(this.buttonEnviar);
             this.Controls.Add(this.textBoxMensagens);
-            this.Controls.Add(this.richTextBoxChat);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "FormCliente";
-            this.Text = "FormCliente";
+            this.Text = "Cliente";
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.RichTextBox richTextBoxChat;
         private System.Windows.Forms.TextBox textBoxMensagens;
-        private System.Windows.Forms.Button Enviar;
+        private System.Windows.Forms.Button buttonEnviar;
         private System.Windows.Forms.Button buttonFicheiros;
         private System.Windows.Forms.Button buttonSair;
+        private System.Windows.Forms.ListBox listBoxChat;
     }
 }

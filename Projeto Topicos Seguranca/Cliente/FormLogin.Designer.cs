@@ -49,6 +49,7 @@ namespace Cliente
             this.buttonLoginRegister.TabIndex = 0;
             this.buttonLoginRegister.Text = "Login";
             this.buttonLoginRegister.UseVisualStyleBackColor = true;
+            this.buttonLoginRegister.Click += new System.EventHandler(this.buttonLoginRegister_Click);
             // 
             // l_label1
             // 
@@ -90,7 +91,7 @@ namespace Cliente
             this.radioButtonLogin.AutoSize = true;
             this.radioButtonLogin.Checked = true;
             this.radioButtonLogin.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.radioButtonLogin.Location = new System.Drawing.Point(12, 13);
+            this.radioButtonLogin.Location = new System.Drawing.Point(11, 12);
             this.radioButtonLogin.Name = "radioButtonLogin";
             this.radioButtonLogin.Size = new System.Drawing.Size(67, 25);
             this.radioButtonLogin.TabIndex = 5;
@@ -103,7 +104,7 @@ namespace Cliente
             // 
             this.radioButtonRegister.AutoSize = true;
             this.radioButtonRegister.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.radioButtonRegister.Location = new System.Drawing.Point(12, 44);
+            this.radioButtonRegister.Location = new System.Drawing.Point(11, 43);
             this.radioButtonRegister.Name = "radioButtonRegister";
             this.radioButtonRegister.Size = new System.Drawing.Size(85, 25);
             this.radioButtonRegister.TabIndex = 6;
@@ -120,7 +121,7 @@ namespace Cliente
             this.panel1.Size = new System.Drawing.Size(200, 78);
             this.panel1.TabIndex = 7;
             // 
-            // Login
+            // FormLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -133,7 +134,7 @@ namespace Cliente
             this.Controls.Add(this.buttonLoginRegister);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "Login";
+            this.Name = "FormLogin";
             this.Text = "Login";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

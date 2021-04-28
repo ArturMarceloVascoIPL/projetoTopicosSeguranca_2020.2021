@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Cliente
 {
-    static class Program
+    static class ProgramCliente
     {
         /// <summary>
         ///  The main entry point for the application.
@@ -17,7 +17,7 @@ namespace Cliente
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormLogin());
+            Application.Run(new FormCliente());
         }
     }
 }
