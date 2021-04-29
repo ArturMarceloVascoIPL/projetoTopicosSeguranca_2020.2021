@@ -56,7 +56,12 @@ namespace Cliente
 
         private void buttonSair_Click(object sender, EventArgs e)
         {
-            fechaPrograma();
+            this.Close(); // Fecha o formulario, iniciando o evento formClosing
+        }
+
+        private void FormCliente_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = fechaPrograma(); // Recebe true ou false dependendo da resposta do utilizador na funcao
         }
 
         /* 
@@ -65,7 +70,7 @@ namespace Cliente
          * e caso confirme que sim, enviar a mensagem de EOT ao servidor, fechar os servicos
          * e fechar o formulario. 
          */
-        private void fechaPrograma()
+        private bool fechaPrograma()
         {
             var response = MessageBox.Show("Quer mesmo sair?", "Cliente", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -78,7 +83,12 @@ namespace Cliente
 
                 networkStream.Close(); // Fecha o servico da Stream
                 tcpClient.Close(); // Encerra o cliente TCP
-                this.Close(); // Fecha o formulario
+
+                return false; // Retorna false para o formulario continuar a fechar
+            }
+            else
+            {
+                return true; // Retorna true para cancelar o fecho do formulario
             }
         }
     }

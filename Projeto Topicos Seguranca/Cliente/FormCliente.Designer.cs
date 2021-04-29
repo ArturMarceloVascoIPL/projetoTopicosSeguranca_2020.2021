@@ -101,6 +101,7 @@ namespace Cliente
             this.MaximizeBox = false;
             this.Name = "FormCliente";
             this.Text = "Cliente";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormCliente_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 

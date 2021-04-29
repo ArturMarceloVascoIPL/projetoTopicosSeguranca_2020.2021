@@ -65,7 +65,7 @@ namespace Servidor
                     }
                     catch (Exception error)
                     {
-                        Console.WriteLine($"* Error - Exception: {error.Message} *");
+                        Console.WriteLine($"Cliente {clientID} perdeu a ligação ao servidor\n*Erro - {error.Message}");                        
                     }
 
                     byte[] ack = protocolSI.Make(ProtocolSICmdType.ACK); // Guarda uma mensagem tipo ACK(Acknowlodge) no array de bytes
