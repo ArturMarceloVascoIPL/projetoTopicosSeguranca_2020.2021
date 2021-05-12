@@ -31,7 +31,7 @@ namespace Cliente
         private void radioButtonRegister_CheckedChanged(object sender, EventArgs e)
         {
             this.Text = "Register";
-            buttonLoginRegister.Text= "Register";
+            buttonLoginRegister.Text = "Register";
             isLogin = false;
         }
 

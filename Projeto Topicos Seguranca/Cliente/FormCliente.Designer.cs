@@ -109,7 +109,7 @@ namespace Cliente
             this.Controls.Add(this.buttonFicheiros);
             this.Controls.Add(this.buttonEnviar);
             this.Controls.Add(this.textBoxMensagens);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -121,7 +121,7 @@ namespace Cliente
             this.PerformLayout();
 
         }
-        
+
         #endregion
         private System.Windows.Forms.TextBox textBoxMensagens;
         private System.Windows.Forms.Button buttonEnviar;
