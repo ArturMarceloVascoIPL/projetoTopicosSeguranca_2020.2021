@@ -85,7 +85,7 @@ namespace Cliente
             this.buttonLoginRegister.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonLoginRegister.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.buttonLoginRegister.ForeColor = System.Drawing.Color.White;
-            this.buttonLoginRegister.Location = new System.Drawing.Point(13, 379);
+            this.buttonLoginRegister.Location = new System.Drawing.Point(13, 360);
             this.buttonLoginRegister.Margin = new System.Windows.Forms.Padding(4);
             this.buttonLoginRegister.Name = "buttonLoginRegister";
             this.buttonLoginRegister.Size = new System.Drawing.Size(258, 42);
@@ -136,7 +136,8 @@ namespace Cliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(287, 434);
+            this.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.ClientSize = new System.Drawing.Size(287, 420);
             this.Controls.Add(this.buttonLoginRegister);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.textBoxPassword);

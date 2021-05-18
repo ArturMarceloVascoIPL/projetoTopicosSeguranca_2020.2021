@@ -91,5 +91,13 @@ namespace Cliente
                 return true; // Retorna true para cancelar o fecho do formulario
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+            //openFileDialog1.Filter = "TXT files|*.txt"; 
+            openFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            openFileDialog1.ShowDialog();
+        }
     }
 }

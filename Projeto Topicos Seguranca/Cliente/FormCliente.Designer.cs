@@ -29,12 +29,12 @@ namespace Cliente
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormCliente));
             this.textBoxMensagens = new System.Windows.Forms.TextBox();
             this.buttonEnviar = new System.Windows.Forms.Button();
-            this.buttonFicheiros = new System.Windows.Forms.Button();
             this.buttonSair = new System.Windows.Forms.Button();
             this.listBoxChat = new System.Windows.Forms.ListBox();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBoxMensagens
@@ -51,7 +51,7 @@ namespace Cliente
             this.buttonEnviar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonEnviar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.buttonEnviar.ForeColor = System.Drawing.Color.White;
-            this.buttonEnviar.Location = new System.Drawing.Point(82, 486);
+            this.buttonEnviar.Location = new System.Drawing.Point(97, 492);
             this.buttonEnviar.Margin = new System.Windows.Forms.Padding(4);
             this.buttonEnviar.Name = "buttonEnviar";
             this.buttonEnviar.Size = new System.Drawing.Size(231, 42);
@@ -60,25 +60,13 @@ namespace Cliente
             this.buttonEnviar.UseVisualStyleBackColor = false;
             this.buttonEnviar.Click += new System.EventHandler(this.Enviar_Click);
             // 
-            // buttonFicheiros
-            // 
-            this.buttonFicheiros.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.buttonFicheiros.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.buttonFicheiros.Image = ((System.Drawing.Image)(resources.GetObject("buttonFicheiros.Image")));
-            this.buttonFicheiros.Location = new System.Drawing.Point(35, 486);
-            this.buttonFicheiros.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonFicheiros.Name = "buttonFicheiros";
-            this.buttonFicheiros.Size = new System.Drawing.Size(39, 42);
-            this.buttonFicheiros.TabIndex = 3;
-            this.buttonFicheiros.UseVisualStyleBackColor = false;
-            // 
             // buttonSair
             // 
             this.buttonSair.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(131)))), ((int)(((byte)(11)))), ((int)(((byte)(18)))));
             this.buttonSair.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonSair.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.buttonSair.ForeColor = System.Drawing.Color.White;
-            this.buttonSair.Location = new System.Drawing.Point(411, 486);
+            this.buttonSair.Location = new System.Drawing.Point(411, 492);
             this.buttonSair.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSair.Name = "buttonSair";
             this.buttonSair.Size = new System.Drawing.Size(231, 42);
@@ -99,14 +87,30 @@ namespace Cliente
             this.listBoxChat.Size = new System.Drawing.Size(607, 424);
             this.listBoxChat.TabIndex = 5;
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // button1
+            // 
+            this.button1.BackgroundImage = global::Cliente.Properties.Resources.outline_attach_file_black_24dp;
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.button1.Location = new System.Drawing.Point(35, 491);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(55, 43);
+            this.button1.TabIndex = 6;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // FormCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.HighlightText;
             this.ClientSize = new System.Drawing.Size(683, 547);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.listBoxChat);
             this.Controls.Add(this.buttonSair);
-            this.Controls.Add(this.buttonFicheiros);
             this.Controls.Add(this.buttonEnviar);
             this.Controls.Add(this.textBoxMensagens);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -125,8 +129,9 @@ namespace Cliente
         #endregion
         private System.Windows.Forms.TextBox textBoxMensagens;
         private System.Windows.Forms.Button buttonEnviar;
-        private System.Windows.Forms.Button buttonFicheiros;
         private System.Windows.Forms.Button buttonSair;
         private System.Windows.Forms.ListBox listBoxChat;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button button1;
     }
 }
