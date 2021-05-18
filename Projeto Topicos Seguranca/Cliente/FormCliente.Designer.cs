@@ -39,11 +39,12 @@ namespace Cliente
             // 
             // textBoxMensagens
             // 
-            this.textBoxMensagens.Location = new System.Drawing.Point(35, 449);
+            this.textBoxMensagens.Location = new System.Drawing.Point(31, 428);
             this.textBoxMensagens.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxMensagens.Name = "textBoxMensagens";
-            this.textBoxMensagens.Size = new System.Drawing.Size(607, 29);
+            this.textBoxMensagens.Size = new System.Drawing.Size(540, 27);
             this.textBoxMensagens.TabIndex = 1;
+            this.textBoxMensagens.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxMensagens_KeyPress);
             // 
             // buttonEnviar
             // 
@@ -51,10 +52,10 @@ namespace Cliente
             this.buttonEnviar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonEnviar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.buttonEnviar.ForeColor = System.Drawing.Color.White;
-            this.buttonEnviar.Location = new System.Drawing.Point(97, 492);
+            this.buttonEnviar.Location = new System.Drawing.Point(86, 469);
             this.buttonEnviar.Margin = new System.Windows.Forms.Padding(4);
             this.buttonEnviar.Name = "buttonEnviar";
-            this.buttonEnviar.Size = new System.Drawing.Size(231, 42);
+            this.buttonEnviar.Size = new System.Drawing.Size(205, 40);
             this.buttonEnviar.TabIndex = 2;
             this.buttonEnviar.Text = "Enviar";
             this.buttonEnviar.UseVisualStyleBackColor = false;
@@ -66,10 +67,10 @@ namespace Cliente
             this.buttonSair.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonSair.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.buttonSair.ForeColor = System.Drawing.Color.White;
-            this.buttonSair.Location = new System.Drawing.Point(411, 492);
+            this.buttonSair.Location = new System.Drawing.Point(365, 469);
             this.buttonSair.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSair.Name = "buttonSair";
-            this.buttonSair.Size = new System.Drawing.Size(231, 42);
+            this.buttonSair.Size = new System.Drawing.Size(205, 40);
             this.buttonSair.TabIndex = 4;
             this.buttonSair.Text = "Sair";
             this.buttonSair.UseVisualStyleBackColor = false;
@@ -80,11 +81,11 @@ namespace Cliente
             this.listBoxChat.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.listBoxChat.FormattingEnabled = true;
             this.listBoxChat.ItemHeight = 28;
-            this.listBoxChat.Location = new System.Drawing.Point(35, 17);
+            this.listBoxChat.Location = new System.Drawing.Point(31, 16);
             this.listBoxChat.Margin = new System.Windows.Forms.Padding(4);
             this.listBoxChat.Name = "listBoxChat";
             this.listBoxChat.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.listBoxChat.Size = new System.Drawing.Size(607, 424);
+            this.listBoxChat.Size = new System.Drawing.Size(540, 396);
             this.listBoxChat.TabIndex = 5;
             // 
             // openFileDialog1
@@ -93,21 +94,20 @@ namespace Cliente
             // 
             // button1
             // 
-            this.button1.BackgroundImage = global::Cliente.Properties.Resources.outline_attach_file_black_24dp;
             this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.button1.Location = new System.Drawing.Point(35, 491);
+            this.button1.Location = new System.Drawing.Point(31, 468);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(55, 43);
+            this.button1.Size = new System.Drawing.Size(49, 41);
             this.button1.TabIndex = 6;
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // FormCliente
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.ClientSize = new System.Drawing.Size(683, 547);
+            this.ClientSize = new System.Drawing.Size(607, 521);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.listBoxChat);
             this.Controls.Add(this.buttonSair);

@@ -99,5 +99,13 @@ namespace Cliente
             openFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             openFileDialog1.ShowDialog();
         }
+
+        private void textBoxMensagens_KeyPress(object sender, KeyPressEventArgs e)
+        {        
+            if(e.KeyChar == 13)
+            {
+                buttonEnviar.PerformClick();
+            }
+        }
     }
 }
