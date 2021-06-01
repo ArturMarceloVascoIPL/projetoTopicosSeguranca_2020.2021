@@ -3,6 +3,7 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Cliente
@@ -15,9 +16,14 @@ namespace Cliente
         ProtocolSI protocolSI;
         TcpClient tcpClient;
 
+        ThreadHandler threadHandler;
+        
+
+
         public FormCliente()
         {
             InitializeComponent();
+
 
             IPEndPoint endPoint = new IPEndPoint(IPAddress.Loopback, PORT); // Instancia o endPoint com a PORT
 
@@ -27,6 +33,8 @@ namespace Cliente
             networkStream = tcpClient.GetStream();
 
             protocolSI = new ProtocolSI();
+
+            threadHandler = new ThreadHandler(networkStream,protocolSI);
         }
 
         private void Enviar_Click(object sender, EventArgs e)
@@ -83,6 +91,7 @@ namespace Cliente
 
                 networkStream.Close(); // Fecha o servico da Stream
                 tcpClient.Close(); // Encerra o cliente TCP
+                Environment.Exit(Environment.ExitCode);// Limpa a memória e fecha a thread
 
                 return false; // Retorna false para o formulario continuar a fechar
             }
@@ -100,12 +109,77 @@ namespace Cliente
             openFileDialog1.ShowDialog();
         }
 
+        //Enter envia a mensagem
         private void textBoxMensagens_KeyPress(object sender, KeyPressEventArgs e)
         {        
             if(e.KeyChar == 13)
             {
                 buttonEnviar.PerformClick();
             }
+        }
+
+
+        
+        public class ThreadHandler
+        {
+            private NetworkStream networkStream;
+            private ProtocolSI protocolSI;
+            Thread thread1;
+
+
+            public ThreadHandler(NetworkStream networkStream, ProtocolSI protocolSI)
+            {
+                this.networkStream = networkStream;
+                this.protocolSI = protocolSI;
+
+                thread1 = new Thread(threadHandler1);
+                thread1.Start();
+            }
+
+            public void Stop()
+            {
+                
+            }
+
+            void threadHandler1()
+            {
+                while (true)
+                {
+                    try
+                    {
+                        int bytesRead = networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length); // Guarda o numero de bytes lidos
+                        if (bytesRead == 0)
+                        {
+                            return;
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        MessageBox.Show($"Erro - {error.Message}");
+                    }
+
+                    byte[] ack = protocolSI.Make(ProtocolSICmdType.ACK); // Guarda uma mensagem tipo ACK(Acknowlodge) no array de bytes
+
+                    switch (protocolSI.GetCmdType())
+                    {
+                        case ProtocolSICmdType.DATA:                          
+                            //listBoxChat.Items.Add($"Servidor: " + protocolSI.GetStringFromData());
+                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
+                            break;
+                    }
+
+                    if(thread1.IsAlive == true)
+                    {
+
+                    Thread.Sleep(1000);
+                    }
+                }
+            }
+        }
+
+        private void FormCliente_Load(object sender, EventArgs e)
+        {
+            
         }
     }
 }

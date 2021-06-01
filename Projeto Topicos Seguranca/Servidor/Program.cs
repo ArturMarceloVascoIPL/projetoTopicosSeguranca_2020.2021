@@ -1,5 +1,6 @@
 ﻿using EI.SI;
 using System;
+using System.Data.SqlClient;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -76,18 +77,88 @@ namespace Servidor
                             Console.WriteLine($"Client {clientID}: " + protocolSI.GetStringFromData());
 
                             networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
+
+                            byte[] packet = protocolSI.Make(ProtocolSICmdType.DATA, "recebido"); // Guarda a mensagem e o tipo do protocolo num array de bytes
+
+                            networkStream.Write(packet, 0, packet.Length); // Insere o packet na Stream
+
+                            while (protocolSI.GetCmdType() != ProtocolSICmdType.ACK)
+                            {
+                                networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length); // Ler o buffer enquanto espera pelo ack(acknowledge)
+                            }
                             break;
+
+                        case ProtocolSICmdType.USER_OPTION_1:
+                            Console.WriteLine($"username: {protocolSI.GetStringFromData()}");
+                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
+
+                            Console.WriteLine($"saltHash: {protocolSI.GetStringFromData()}");
+                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
+
+                            Console.WriteLine($"salt: {protocolSI.GetStringFromData()}");
+                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
+                            break;
+
 
                         case ProtocolSICmdType.EOT:
                             Console.WriteLine($"Client {clientID} has disconnected");
 
                             networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
                             break;
+
+
                     }
                 }
 
                 networkStream.Close(); // Fecha o servico da Stream
                 tcpClient.Close(); // Encerra o cliente TCP
+            }
+
+            private void Register(string username, byte[] saltedPasswordHash, byte[] salt)
+            {
+                SqlConnection conn = null;
+
+                try
+                {
+                    // Configurar ligação à Base de Dados
+                    conn = new SqlConnection();
+                    conn.ConnectionString = String.Format(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\mrace\OneDrive\Ambiente de Trabalho\TS\ProjetoTS\projetoTopicosSeguranca_2020.2021\Projeto Topicos Seguranca\Servidor\DatabaseTS.mdf;Integrated Security=True");
+
+                    // Abrir ligação à Base de Dados
+                    conn.Open();
+
+                    // Declaração dos parâmetros do comando SQL
+                    SqlParameter paramUsername = new SqlParameter("@username", username);
+                    SqlParameter paramPassHash = new SqlParameter("@saltedPasswordHash", saltedPasswordHash);
+                    SqlParameter paramSalt = new SqlParameter("@salt", salt);
+
+                    // Declaração do comando SQL
+                    String sql = "INSERT INTO Users (Username, SaltedPasswordHash, Salt) VALUES (@username,@saltedPasswordHash,@salt)";
+
+                    // Prepara comando SQL para ser executado na Base de Dados
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+
+                    // Introduzir valores aos parâmentros registados no comando SQL
+                    cmd.Parameters.Add(paramUsername);
+                    cmd.Parameters.Add(paramPassHash);
+                    cmd.Parameters.Add(paramSalt);
+
+                    // Executar comando SQL
+                    int lines = cmd.ExecuteNonQuery();
+
+                    // Fechar ligação
+                    conn.Close();
+                    if (lines == 0)
+                    {
+                        // Se forem devolvidas 0 linhas alteradas então o não foi executado com sucesso
+                        throw new Exception("Error while inserting an user");
+                    }
+                }
+                catch (Exception e)
+                {
+
+                    throw new Exception("Error while inserting an user:" + e.Message);
+                }
             }
         }
     }
