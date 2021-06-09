@@ -1,8 +1,10 @@
 ﻿using EI.SI;
 using System;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 
@@ -40,6 +42,14 @@ namespace Servidor
             private TcpClient tcpClient;
             private int clientID;
 
+            private const int SALTSIZE = 8; // Tamanho do SALT
+            private const int NUMBER_OF_ITERATIONS = 1000; // Numero de iteracoes
+
+            string username;
+            byte[] pass;
+            byte[] salt;
+            byte[] saltedHash;
+
             public ClientHandler(TcpClient tcpClient, int clientID)
             {
                 this.tcpClient = tcpClient;
@@ -55,58 +65,119 @@ namespace Servidor
             public void threadHandler1()
             {
                 ProtocolSI protocolSI = new ProtocolSI();
-
                 NetworkStream networkStream = this.tcpClient.GetStream();
 
                 while (protocolSI.GetCmdType() != ProtocolSICmdType.EOT)
                 {
+                    byte[] ack = protocolSI.Make(ProtocolSICmdType.ACK); // Guarda uma mensagem tipo ACK(Acknowlodge) no array de bytes
+
                     try
                     {
                         int bytesRead = networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length); // Guarda o numero de bytes lidos
+
+                        switch (protocolSI.GetCmdType())
+                        {
+                            case ProtocolSICmdType.DATA:
+                                byte[] packetData;
+                                string userMsg = protocolSI.GetStringFromData();
+                                string response = "";
+
+                                Console.WriteLine($"Client {clientID}: " + userMsg);
+
+                                if (userMsg.StartsWith("!"))
+                                {
+                                    switch (userMsg)
+                                    {
+                                        case "!Horas":
+                                            response = DateTime.Now.ToString("HH:mm");
+                                            break;
+
+                                        case "!Data":
+                                            response = DateTime.Now.ToString("dd/MM/yyyy");
+                                            break;
+
+                                        default:
+                                            response = "Comando Invalido";
+                                            break;
+                                    }
+
+                                    packetData = protocolSI.Make(ProtocolSICmdType.DATA, response);
+                                    networkStream.Write(packetData, 0, packetData.Length);
+                                }
+                                break;
+
+                            case ProtocolSICmdType.PUBLIC_KEY:
+                                break;
+
+                            case ProtocolSICmdType.SECRET_KEY:
+                                break;
+
+                            case ProtocolSICmdType.USER_OPTION_1: // USERNAME
+                                username = protocolSI.GetStringFromData();
+
+                                Console.WriteLine($"Username: " + protocolSI.GetStringFromData());
+                                break;
+
+                            case ProtocolSICmdType.USER_OPTION_2: // PASSWORD e Registo
+                                byte[] packetRegister;
+
+                                try
+                                {
+                                    Console.WriteLine($"Password: " + protocolSI.GetStringFromData());
+
+                                    pass = protocolSI.GetData();
+
+                                    salt = GenerateSalt(SALTSIZE);
+
+                                    saltedHash = GenerateSaltedHash(pass, salt);
+
+                                    Register(username, saltedHash, salt);
+
+                                    packetRegister = protocolSI.Make(ProtocolSICmdType.DATA, "Registado com Sucesso");
+                                }
+                                catch (Exception err)
+                                {
+                                    packetRegister = protocolSI.Make(ProtocolSICmdType.DATA, $"Erro no Registo!\n{err.Message}");
+                                }
+
+                                networkStream.Write(packetRegister, 0, packetRegister.Length);
+                                break;
+
+                            case ProtocolSICmdType.USER_OPTION_3: // PASSWORD e Login
+                                byte[] packetLogin;
+
+                                try
+                                {
+                                    Console.WriteLine($"Password: " + protocolSI.GetStringFromData());
+
+                                    if (VerifyLogin(username, protocolSI.GetStringFromData()))
+                                    {
+                                        packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, "Login com Sucesso");
+                                    }
+                                    else
+                                    {
+                                        packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, $"Erro no Login!");
+                                    }
+                                }
+                                catch (Exception err)
+                                {
+                                    packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, $"Erro no Login!\n{err.Message}");
+                                }
+
+                                networkStream.Write(packetLogin, 0, packetLogin.Length);
+                                break;
+
+                            case ProtocolSICmdType.EOT:
+                                Console.WriteLine($"Client {clientID} has disconnected");
+                                break;
+                        }
+
+                        networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
+
                     }
-                    catch (Exception error)
+                    catch (Exception err)
                     {
-                        Console.WriteLine($"Cliente {clientID} perdeu a ligação ao servidor\n*Erro - {error.Message}");                        
-                    }
-
-                    byte[] ack = protocolSI.Make(ProtocolSICmdType.ACK); // Guarda uma mensagem tipo ACK(Acknowlodge) no array de bytes
-
-                    switch (protocolSI.GetCmdType())
-                    {
-                        case ProtocolSICmdType.DATA:
-                            Console.WriteLine($"Client {clientID}: " + protocolSI.GetStringFromData());
-
-                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
-
-                            byte[] packet = protocolSI.Make(ProtocolSICmdType.DATA, "recebido"); // Guarda a mensagem e o tipo do protocolo num array de bytes
-
-                            networkStream.Write(packet, 0, packet.Length); // Insere o packet na Stream
-
-                            while (protocolSI.GetCmdType() != ProtocolSICmdType.ACK)
-                            {
-                                networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length); // Ler o buffer enquanto espera pelo ack(acknowledge)
-                            }
-                            break;
-
-                        case ProtocolSICmdType.USER_OPTION_1:
-                            Console.WriteLine($"username: {protocolSI.GetStringFromData()}");
-                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
-
-                            Console.WriteLine($"saltHash: {protocolSI.GetStringFromData()}");
-                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
-
-                            Console.WriteLine($"salt: {protocolSI.GetStringFromData()}");
-                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
-                            break;
-
-
-                        case ProtocolSICmdType.EOT:
-                            Console.WriteLine($"Client {clientID} has disconnected");
-
-                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
-                            break;
-
-
+                        Console.WriteLine($"Cliente {clientID} perdeu a ligação ao servidor!\n*Erro - {err.Message}");
                     }
                 }
 
@@ -114,6 +185,7 @@ namespace Servidor
                 tcpClient.Close(); // Encerra o cliente TCP
             }
 
+            // Funcao que regista o utilizador
             private void Register(string username, byte[] saltedPasswordHash, byte[] salt)
             {
                 SqlConnection conn = null;
@@ -122,7 +194,7 @@ namespace Servidor
                 {
                     // Configurar ligação à Base de Dados
                     conn = new SqlConnection();
-                    conn.ConnectionString = String.Format(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\mrace\OneDrive\Ambiente de Trabalho\TS\ProjetoTS\projetoTopicosSeguranca_2020.2021\Projeto Topicos Seguranca\Servidor\DatabaseTS.mdf;Integrated Security=True");
+                    conn.ConnectionString = String.Format(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\projetoTopicosSeguranca_2020.2021\Projeto Topicos Seguranca\Servidor\ChatSystemDB.mdf;Integrated Security=True");
 
                     // Abrir ligação à Base de Dados
                     conn.Open();
@@ -151,13 +223,91 @@ namespace Servidor
                     if (lines == 0)
                     {
                         // Se forem devolvidas 0 linhas alteradas então o não foi executado com sucesso
-                        throw new Exception("Error while inserting an user");
+                        throw new Exception("Error while inserting a user");
                     }
                 }
                 catch (Exception e)
                 {
+                    throw new Exception("Error while inserting a user:" + e.Message);
+                }
+            }
 
-                    throw new Exception("Error while inserting an user:" + e.Message);
+            private bool VerifyLogin(string username, string password)
+            {
+                SqlConnection conn = null;
+                try
+                {
+                    // Configurar ligação à Base de Dados
+                    conn = new SqlConnection();
+                    conn.ConnectionString = String.Format(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\projetoTopicosSeguranca_2020.2021\Projeto Topicos Seguranca\Servidor\ChatSystemDB.mdf;Integrated Security=True");
+
+                    // Abrir ligação à Base de Dados
+                    conn.Open();
+
+                    // Declaração do comando SQL
+                    String sql = "SELECT * FROM Users WHERE Username = @username";
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.CommandText = sql;
+
+                    // Declaração dos parâmetros do comando SQL
+                    SqlParameter param = new SqlParameter("@username", username);
+
+                    // Introduzir valor ao parâmentro registado no comando SQL
+                    cmd.Parameters.Add(param);
+
+                    // Associar ligação à Base de Dados ao comando a ser executado
+                    cmd.Connection = conn;
+
+                    // Executar comando SQL
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (!reader.HasRows)
+                    {
+                        throw new Exception("Error while trying to access a user");
+                    }
+
+                    // Ler resultado da pesquisa
+                    reader.Read();
+
+                    // Obter Hash (password + salt)
+                    byte[] saltedPasswordHashStored = (byte[])reader["SaltedPasswordHash"];
+
+                    // Obter salt
+                    byte[] saltStored = (byte[])reader["Salt"];
+
+                    conn.Close();
+
+                    // Verificar se a password na base de dados
+                    pass = Encoding.UTF8.GetBytes(password);
+                    saltedHash = GenerateSaltedHash(pass, saltStored);
+
+                    return saltedPasswordHashStored.SequenceEqual(saltedHash);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("An error occurred: " + e.Message);
+                    return false;
+                }
+            }
+
+            // Funcao que gera o SALT
+            private static byte[] GenerateSalt(int size)
+            {
+                //Generate a cryptographic random number.
+                using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+                {
+                    byte[] buff = new byte[size];
+                    rng.GetBytes(buff);
+                    return buff;
+                }
+            }
+
+            // Funcao que gera a Password 'Salteada'
+            private static byte[] GenerateSaltedHash(byte[] plainText, byte[] salt)
+            {
+                using (Rfc2898DeriveBytes rfc2898 = new Rfc2898DeriveBytes(plainText, salt, NUMBER_OF_ITERATIONS))
+                {
+                    return rfc2898.GetBytes(32);
                 }
             }
         }

@@ -17,17 +17,12 @@ namespace Cliente
 {
     public partial class FormLogin : Form
     {
+
         bool isLogin = true;
-
-        private const int SALTSIZE = 8;
-        private const int NUMBER_OF_ITERATIONS = 1000;
-
-        byte[] salt;
-        byte[] saltHash;
-        byte[] password;
 
         private const int PORT = 2000; // Variavel que define a PORTA do cliente, tem de ser igual ao do servidor
 
+        FormCliente formCliente;
         NetworkStream networkStream;
         ProtocolSI protocolSI;
         TcpClient tcpClient;
@@ -42,10 +37,43 @@ namespace Cliente
             tcpClient.Connect(endPoint); // Conecta o cliente pelo EndPoint
 
             networkStream = tcpClient.GetStream();
-
             protocolSI = new ProtocolSI();
-            
         }
+
+        #region Funcoes
+
+        /* 
+         * Funcao fechaPrograma:
+         * Funcao com o objetivo de confirmar com o utilizador se este quer sair do programa
+         * e caso confirme que sim, enviar a mensagem de EOT ao servidor, fechar os servicos
+         * e fechar o formulario. 
+         */
+        private bool fechaPrograma()
+        {
+            var response = MessageBox.Show("Quer mesmo sair?", "Cliente", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (response == DialogResult.Yes)
+            {
+                byte[] eot = protocolSI.Make(ProtocolSICmdType.EOT); // Guarda uma mensagem tipo EOT(End Of Transmission) no array de bytes
+
+                networkStream.Write(eot, 0, eot.Length); // Insere o eot na Stream
+                networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length);
+
+                networkStream.Close(); // Fecha o servico da Stream
+                tcpClient.Close(); // Encerra o cliente TCP
+                Environment.Exit(Environment.ExitCode);// Limpa a memória e fecha a thread
+
+                return false; // Retorna false para o formulario continuar a fechar
+            }
+            else
+            {
+                return true; // Retorna true para cancelar o fecho do formulario
+            }
+        }
+
+        #endregion
+
+        #region MiscEvents
 
         private void radioButtonLogin_CheckedChanged(object sender, EventArgs e)
         {
@@ -61,73 +89,116 @@ namespace Cliente
             isLogin = false;
         }
 
-        
+        private void FormLogin_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            fechaPrograma();
+        }
+
+        // 'Enter' faz login/registo
+        private void textBoxUsername_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                buttonLoginRegister.PerformClick();
+            }
+        }
+
+        // 'Enter' faz login/registo
+        private void textBoxPassword_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == 13)
+            {
+                buttonLoginRegister.PerformClick();
+            }
+        }
+
+        #endregion
 
         private void buttonLoginRegister_Click(object sender, EventArgs e)
         {
             if (isLogin == true)
             {
-                //if (textBoxUsername.Text == username && textBoxPassword.Text == password)
-                //{
-                //    this.Close();
-                //}
-                //else
-                //{
-                //    MessageBox.Show("Credenciais Erradas!");
-                //}
+                string msg = "";
 
+                byte[] option1 = protocolSI.Make(ProtocolSICmdType.USER_OPTION_1, textBoxUsername.Text);
+
+                networkStream.Write(option1, 0, option1.Length);
+
+                while (protocolSI.GetCmdType() == ProtocolSICmdType.ACK)
+                {
+                    networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length);
+                }
+
+                byte[] option3 = protocolSI.Make(ProtocolSICmdType.USER_OPTION_3, textBoxPassword.Text);
+
+                networkStream.Write(option3, 0, option3.Length);
+
+                while (true)
+                {
+                    networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length);
+
+                    if (protocolSI.GetCmdType() == ProtocolSICmdType.ACK)
+                    {
+                        break;
+                    }
+                    else if (protocolSI.GetCmdType() == ProtocolSICmdType.DATA)
+                    {
+                        msg = msg + protocolSI.GetStringFromData();
+                    }
+                }
+
+                if (!String.IsNullOrWhiteSpace(msg))
+                {
+                    MessageBox.Show(msg, "Login.");
+                }
+
+                formCliente = new FormCliente(networkStream, protocolSI, tcpClient);
+                this.Hide();
+                formCliente.ShowDialog();
             }
             else
             {
-                if(!String.IsNullOrWhiteSpace(textBoxUsername.Text) || !String.IsNullOrWhiteSpace(textBoxPassword.Text))
+                if (!String.IsNullOrWhiteSpace(textBoxUsername.Text) || !String.IsNullOrWhiteSpace(textBoxPassword.Text))
                 {
-                    byte[] username = Encoding.UTF8.GetBytes(textBoxUsername.Text);
+                    string msg = "";
 
-                    password = Encoding.UTF8.GetBytes(textBoxPassword.Text);
-                    salt = GenerateSalt(SALTSIZE);//mudar para servidor
+                    byte[] option1 = protocolSI.Make(ProtocolSICmdType.USER_OPTION_1, textBoxUsername.Text);
 
-                    saltHash = GenerateSaltedHash(password, salt);//mudar apra servidor
+                    networkStream.Write(option1, 0, option1.Length);
 
-
-                    byte[] packet = protocolSI.Make(ProtocolSICmdType.USER_OPTION_1, username); // Guarda a mensagem e o tipo do protocolo num array de bytes
-
-                    networkStream.Write(packet, 0, packet.Length); // Insere o packet na Stream
-
-                    while (protocolSI.GetCmdType() != ProtocolSICmdType.ACK)
+                    while (protocolSI.GetCmdType() == ProtocolSICmdType.ACK)
                     {
-                        networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length); // Ler o buffer enquanto espera pelo ack(acknowledge)
+                        networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length);
                     }
 
-                    byte[] packet = protocolSI.Make(ProtocolSICmdType.USER_OPTION_2, password); // Guarda a mensagem e o tipo do protocolo num array de bytes
+                    byte[] option2 = protocolSI.Make(ProtocolSICmdType.USER_OPTION_2, textBoxPassword.Text);
 
-                    networkStream.Write(packet, 0, packet.Length); // Insere o packet na Stream
+                    networkStream.Write(option2, 0, option2.Length);
 
-                    while (protocolSI.GetCmdType() != ProtocolSICmdType.ACK)
+                    while (true)
                     {
-                        networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length); // Ler o buffer enquanto espera pelo ack(acknowledge)
+                        networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length);
+
+                        if (protocolSI.GetCmdType() == ProtocolSICmdType.ACK)
+                        {
+                            break;
+                        }
+                        else if (protocolSI.GetCmdType() == ProtocolSICmdType.DATA)
+                        {
+                            msg = msg + protocolSI.GetStringFromData();
+                        }
                     }
 
+                    if (!String.IsNullOrWhiteSpace(msg))
+                    {
+                        MessageBox.Show(msg, "Registo.");
+                    }
+
+                    formCliente = new FormCliente(networkStream, protocolSI, tcpClient);
+                    this.Hide();
+                    formCliente.ShowDialog();
                 }
-                
-
-                MessageBox.Show("just a test");
             }
         }
-
-        private static byte[] GenerateSalt(int size)
-        {
-            //Generate a cryptographic random number.
-            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-            byte[] buff = new byte[size];
-            rng.GetBytes(buff);
-            return buff;
-        }
-
-        private static byte[] GenerateSaltedHash(byte[] plainText, byte[] salt)
-        {
-            Rfc2898DeriveBytes rfc2898 = new Rfc2898DeriveBytes(plainText, salt, NUMBER_OF_ITERATIONS);
-            return rfc2898.GetBytes(32);
-        }
-
     }
 }

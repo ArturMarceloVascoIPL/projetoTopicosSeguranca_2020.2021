@@ -16,61 +16,16 @@ namespace Cliente
         ProtocolSI protocolSI;
         TcpClient tcpClient;
 
-        ThreadHandler threadHandler;
-        
-
-
-        public FormCliente()
+        public FormCliente(NetworkStream ns, ProtocolSI psi, TcpClient tcp)
         {
+            this.networkStream = ns;
+            this.protocolSI = psi;
+            this.tcpClient = tcp;
+
             InitializeComponent();
-
-
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Loopback, PORT); // Instancia o endPoint com a PORT
-
-            tcpClient = new TcpClient(); // Instancia o cliente TCP
-            tcpClient.Connect(endPoint); // Conecta o cliente pelo EndPoint
-
-            networkStream = tcpClient.GetStream();
-
-            protocolSI = new ProtocolSI();
-
-            threadHandler = new ThreadHandler(networkStream,protocolSI);
         }
 
-        private void Enviar_Click(object sender, EventArgs e)
-        {
-            string msg = textBoxMensagens.Text;
-
-            if (String.IsNullOrWhiteSpace(msg)) // Verifica se a mensagem está vazia
-            {
-                // Avisa o utilizador que não pode mandar uma mensagem vazia
-                MessageBox.Show("Tem de inserir uma mensagem!", "Mensagem Necessária!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else
-            {
-                textBoxMensagens.Clear(); // Limpa a caixa de texto
-                listBoxChat.Items.Add($"You: {msg}"); // Apresenta a mensagem no "chat"
-
-                byte[] packet = protocolSI.Make(ProtocolSICmdType.DATA, msg); // Guarda a mensagem e o tipo do protocolo num array de bytes
-
-                networkStream.Write(packet, 0, packet.Length); // Insere o packet na Stream
-
-                while (protocolSI.GetCmdType() != ProtocolSICmdType.ACK)
-                {
-                    networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length); // Ler o buffer enquanto espera pelo ack(acknowledge)
-                }
-            }
-        }
-
-        private void buttonSair_Click(object sender, EventArgs e)
-        {
-            this.Close(); // Fecha o formulario, iniciando o evento formClosing
-        }
-
-        private void FormCliente_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            e.Cancel = fechaPrograma(); // Recebe true ou false dependendo da resposta do utilizador na funcao
-        }
+        #region Funcoes
 
         /* 
          * Funcao fechaPrograma:
@@ -101,85 +56,65 @@ namespace Cliente
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
+        #endregion
 
-            //openFileDialog1.Filter = "TXT files|*.txt"; 
-            openFileDialog1.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            openFileDialog1.ShowDialog();
+        #region MiscEvents
+
+        private void FormCliente_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = fechaPrograma(); // Recebe true ou false dependendo da resposta do utilizador na funcao
         }
 
         //Enter envia a mensagem
         private void textBoxMensagens_KeyPress(object sender, KeyPressEventArgs e)
-        {        
-            if(e.KeyChar == 13)
+        {
+            if (e.KeyChar == 13)
             {
                 buttonEnviar.PerformClick();
             }
         }
 
+        #endregion
 
-        
-        public class ThreadHandler
+        private void Enviar_Click(object sender, EventArgs e)
         {
-            private NetworkStream networkStream;
-            private ProtocolSI protocolSI;
-            Thread thread1;
+            string msg = "";
 
+            byte[] userData = protocolSI.Make(ProtocolSICmdType.DATA, textBoxMensagem.Text);
 
-            public ThreadHandler(NetworkStream networkStream, ProtocolSI protocolSI)
+            networkStream.Write(userData, 0, userData.Length);
+
+            while (true)
             {
-                this.networkStream = networkStream;
-                this.protocolSI = protocolSI;
+                networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length);
 
-                thread1 = new Thread(threadHandler1);
-                thread1.Start();
-            }
-
-            public void Stop()
-            {
-                
-            }
-
-            void threadHandler1()
-            {
-                while (true)
+                if (protocolSI.GetCmdType() == ProtocolSICmdType.ACK)
                 {
-                    try
-                    {
-                        int bytesRead = networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length); // Guarda o numero de bytes lidos
-                        if (bytesRead == 0)
-                        {
-                            return;
-                        }
-                    }
-                    catch (Exception error)
-                    {
-                        MessageBox.Show($"Erro - {error.Message}");
-                    }
-
-                    byte[] ack = protocolSI.Make(ProtocolSICmdType.ACK); // Guarda uma mensagem tipo ACK(Acknowlodge) no array de bytes
-
-                    switch (protocolSI.GetCmdType())
-                    {
-                        case ProtocolSICmdType.DATA:                          
-                            //listBoxChat.Items.Add($"Servidor: " + protocolSI.GetStringFromData());
-                            networkStream.Write(ack, 0, ack.Length); // Insere o ack na Stream
-                            break;
-                    }
-
-                    if(thread1.IsAlive == true)
-                    {
-
-                    Thread.Sleep(1000);
-                    }
+                    break;
                 }
+                else if (protocolSI.GetCmdType() == ProtocolSICmdType.DATA)
+                {
+                    msg = msg + protocolSI.GetStringFromData();
+                }
+            }
+
+            listBoxChat.Items.Insert(0, $"Cliente: {textBoxMensagem.Text}");
+            textBoxMensagem.Clear();
+
+            if (!String.IsNullOrWhiteSpace(msg))
+            {
+                listBoxChat.Items.Insert(0, $"Server: {msg}");
             }
         }
 
-        private void FormCliente_Load(object sender, EventArgs e)
+        private void buttonSair_Click(object sender, EventArgs e)
         {
-            
+            this.Close(); // Fecha o formulario, iniciando o evento formClosing
+        }
+
+        private void panelFicheiros_Click(object sender, EventArgs e)
+        {
+            var filePath = openFileDialog.FileName;
         }
     }
 }
