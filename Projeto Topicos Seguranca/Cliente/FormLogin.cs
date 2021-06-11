@@ -136,7 +136,7 @@ namespace Cliente
                 {
                     byte[] option3 = protocolSI.Make(ProtocolSICmdType.USER_OPTION_3, textBoxPassword.Text); // Cria a mensagem que envia a Password do utilizador
 
-                    networkStream.Write(option3, 0, option3.Length); // Envia a mensagem através da Stream
+                    networkStream.Write(option3, 0, option3.Length); // Envia a mensagem através da Stream                    
 
                     while (true)
                     {
@@ -148,7 +148,7 @@ namespace Cliente
                         }
                         else if (protocolSI.GetCmdType() == ProtocolSICmdType.DATA) // Se for DATA apanha a resposta do Servidor
                         {
-                            msg = msg + protocolSI.GetStringFromData();
+                            msg += protocolSI.GetStringFromData();
                         }
                     }
                 }
@@ -168,7 +168,7 @@ namespace Cliente
                         }
                         else if (protocolSI.GetCmdType() == ProtocolSICmdType.DATA) // Se for DATA apanha a resposta do Servidor
                         {
-                            msg = msg + protocolSI.GetStringFromData();
+                            msg += protocolSI.GetStringFromData();
                         }
                     }
                 }
@@ -176,14 +176,11 @@ namespace Cliente
                 if (!String.IsNullOrWhiteSpace(msg)) // Verifica se a resposta do Servidor é vazia ou null
                 {
                     MessageBox.Show(msg, "Login/Registo."); // Apresenta a resposta ao utilizador
+                }
 
-                    if (msg == "Sucesso!")
-                    {
-                        formCliente = new FormCliente(networkStream, protocolSI, tcpClient); // Instancia o Form do CLiente (janela de Chat) com as informações de conexão
-                        this.Hide(); // Esconde a janela de Login (não dá para fechar a janela pois fecharia também a janela de Chat)
-                        formCliente.ShowDialog(); // Abre a janela de Chat
-                    }
-                }                
+                formCliente = new FormCliente(networkStream, protocolSI, tcpClient); // Instancia o Form do CLiente (janela de Chat) com as informações de conexão
+                this.Hide(); // Esconde a janela de Login (não dá para fechar a janela pois fecharia também a janela de Chat)
+                formCliente.ShowDialog(); // Abre a janela de Chat
             }
             else
             {

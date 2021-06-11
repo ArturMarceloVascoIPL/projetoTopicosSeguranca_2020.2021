@@ -114,8 +114,6 @@ namespace Servidor
 
                             case ProtocolSICmdType.USER_OPTION_1: // USERNAME
                                 username = protocolSI.GetStringFromData();
-
-                                Console.WriteLine($"Username: " + protocolSI.GetStringFromData());
                                 break;
 
                             case ProtocolSICmdType.USER_OPTION_2: // PASSWORD e Registo
@@ -123,21 +121,23 @@ namespace Servidor
 
                                 try
                                 {
-                                    Console.WriteLine($"Password: " + protocolSI.GetStringFromData());
-
                                     pass = protocolSI.GetData();
 
                                     salt = GenerateSalt(SALTSIZE);
 
                                     saltedHash = GenerateSaltedHash(pass, salt);
 
-                                    packetRegister = protocolSI.Make(ProtocolSICmdType.DATA, "Sucesso!");
+                                    Console.WriteLine("\nA Fazer Registo ...");
 
                                     Register(username, saltedHash, salt);
+
+                                    packetRegister = protocolSI.Make(ProtocolSICmdType.DATA, "Sucesso!");
+                                    Console.WriteLine("Regiso com Sucesso");
                                 }
-                                catch (Exception err)
+                                catch (Exception)
                                 {
                                     packetRegister = protocolSI.Make(ProtocolSICmdType.DATA, "Erro no Registo!");
+                                    Console.WriteLine("Erro no Registo");
                                 }
 
                                 networkStream.Write(packetRegister, 0, packetRegister.Length);
@@ -148,18 +148,20 @@ namespace Servidor
 
                                 try
                                 {
-                                    Console.WriteLine($"Password: " + protocolSI.GetStringFromData());
+                                    Console.WriteLine("\nA Fazer Login ...");
 
                                     if (VerifyLogin(username, protocolSI.GetStringFromData()))
                                     {
                                         packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, "Sucesso!");
+                                        Console.WriteLine("Login com Sucesso");
                                     }
                                     else
                                     {
                                         packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, "Login Incorreto!");
+                                        Console.WriteLine("Login Incorreto");
                                     }
                                 }
-                                catch (Exception err)
+                                catch (Exception)
                                 {
                                     packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, $"Erro no Login!");
                                 }

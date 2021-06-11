@@ -1,5 +1,6 @@
 ﻿using EI.SI;
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -66,13 +67,19 @@ namespace Cliente
             e.Cancel = fechaPrograma(); // Recebe true ou false dependendo da resposta do utilizador na funcao
         }
 
-        //Enter envia a mensagem
+        // 'Enter' envia a mensagem
         private void textBoxMensagens_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == 13)
             {
                 buttonEnviar.PerformClick();
             }
+        }
+
+        // Fecha e Sai do programa
+        private void buttonSair_Click(object sender, EventArgs e)
+        {
+            this.Close(); // Fecha o formulario, iniciando o evento formClosing
         }
 
         #endregion
@@ -101,6 +108,7 @@ namespace Cliente
 
             listBoxChat.Items.Insert(0, $"Cliente: {textBoxMensagem.Text}");
             textBoxMensagem.Clear();
+            textBoxMensagem.Enabled = true;
 
             if (!String.IsNullOrWhiteSpace(msg))
             {
@@ -108,14 +116,17 @@ namespace Cliente
             }
         }
 
-        private void buttonSair_Click(object sender, EventArgs e)
-        {
-            this.Close(); // Fecha o formulario, iniciando o evento formClosing
-        }
-
         private void panelFicheiros_Click(object sender, EventArgs e)
         {
-            var filePath = openFileDialog.FileName;
+            openFileDialog.ShowDialog();
+
+            string filePath = openFileDialog.FileName;
+
+            if (!String.IsNullOrWhiteSpace(filePath))
+            {
+                textBoxMensagem.Text = File.ReadAllText(filePath);
+                textBoxMensagem.Enabled = false;
+            }
         }
     }
 }
