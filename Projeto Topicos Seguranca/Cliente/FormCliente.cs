@@ -25,13 +25,14 @@ namespace Cliente
             InitializeComponent();
         }
 
+        // Funções criadas manualmente (não são eventos gerados pelos controlos do Form)
         #region Funcoes
 
         /* 
-         * Funcao fechaPrograma:
-         * Funcao com o objetivo de confirmar com o utilizador se este quer sair do programa
-         * e caso confirme que sim, enviar a mensagem de EOT ao servidor, fechar os servicos
-         * e fechar o formulario. 
+         * Função fechaPrograma:
+         * Função com o objetivo de confirmar com o utilizador se este quer sair do programa
+         * e caso confirme que sim, enviar a mensagem de EOT ao servidor, fechar os serviços
+         * e fechar o formulário.
          */
         private bool fechaPrograma()
         {
@@ -39,14 +40,13 @@ namespace Cliente
 
             if (response == DialogResult.Yes)
             {
-                byte[] eot = protocolSI.Make(ProtocolSICmdType.EOT); // Guarda uma mensagem tipo EOT(End Of Transmission) no array de bytes
+                byte[] eot = protocolSI.Make(ProtocolSICmdType.EOT); // Cria uma mensagem tipo EOT(End Of Transmission)
 
-                networkStream.Write(eot, 0, eot.Length); // Insere o eot na Stream
-                networkStream.Read(protocolSI.Buffer, 0, protocolSI.Buffer.Length);
+                networkStream.Write(eot, 0, eot.Length); // Envia a mensagem pela Stream
 
                 networkStream.Close(); // Fecha o servico da Stream
                 tcpClient.Close(); // Encerra o cliente TCP
-                Environment.Exit(Environment.ExitCode);// Limpa a memória e fecha a thread
+                Environment.Exit(Environment.ExitCode);// Limpa a memória
 
                 return false; // Retorna false para o formulario continuar a fechar
             }
@@ -58,6 +58,7 @@ namespace Cliente
 
         #endregion
 
+        // Eventos que não aplicam funcionalidades
         #region MiscEvents
 
         private void FormCliente_FormClosing(object sender, FormClosingEventArgs e)

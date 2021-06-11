@@ -131,13 +131,13 @@ namespace Servidor
 
                                     saltedHash = GenerateSaltedHash(pass, salt);
 
-                                    Register(username, saltedHash, salt);
+                                    packetRegister = protocolSI.Make(ProtocolSICmdType.DATA, "Sucesso!");
 
-                                    packetRegister = protocolSI.Make(ProtocolSICmdType.DATA, "Registado com Sucesso");
+                                    Register(username, saltedHash, salt);
                                 }
                                 catch (Exception err)
                                 {
-                                    packetRegister = protocolSI.Make(ProtocolSICmdType.DATA, $"Erro no Registo!\n{err.Message}");
+                                    packetRegister = protocolSI.Make(ProtocolSICmdType.DATA, "Erro no Registo!");
                                 }
 
                                 networkStream.Write(packetRegister, 0, packetRegister.Length);
@@ -152,16 +152,16 @@ namespace Servidor
 
                                     if (VerifyLogin(username, protocolSI.GetStringFromData()))
                                     {
-                                        packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, "Login com Sucesso");
+                                        packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, "Sucesso!");
                                     }
                                     else
                                     {
-                                        packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, $"Erro no Login!");
+                                        packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, "Login Incorreto!");
                                     }
                                 }
                                 catch (Exception err)
                                 {
-                                    packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, $"Erro no Login!\n{err.Message}");
+                                    packetLogin = protocolSI.Make(ProtocolSICmdType.DATA, $"Erro no Login!");
                                 }
 
                                 networkStream.Write(packetLogin, 0, packetLogin.Length);
@@ -232,6 +232,7 @@ namespace Servidor
                 }
             }
 
+            // Funcao que verifica o login
             private bool VerifyLogin(string username, string password)
             {
                 SqlConnection conn = null;
