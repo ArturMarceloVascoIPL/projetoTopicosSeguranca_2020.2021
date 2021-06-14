@@ -39,6 +39,8 @@ namespace Servidor
 
         public class ClientHandler
         {
+            string pathBD = "CaminhoDaBaseDados";
+
             private TcpClient tcpClient;
             private int clientID;
 
@@ -202,7 +204,7 @@ namespace Servidor
                 {
                     // Configurar ligação à Base de Dados
                     conn = new SqlConnection();
-                    conn.ConnectionString = String.Format(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\projetoTopicosSeguranca_2020.2021\Projeto Topicos Seguranca\Servidor\ChatSystemDB.mdf;Integrated Security=True");
+                    conn.ConnectionString = String.Format(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + pathBD + ";Integrated Security=True");
 
                     // Abrir ligação à Base de Dados
                     conn.Open();
@@ -248,7 +250,7 @@ namespace Servidor
                 {
                     // Configurar ligação à Base de Dados
                     conn = new SqlConnection();
-                    conn.ConnectionString = String.Format(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\projetoTopicosSeguranca_2020.2021\Projeto Topicos Seguranca\Servidor\ChatSystemDB.mdf;Integrated Security=True");
+                    conn.ConnectionString = String.Format(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + pathBD + ";Integrated Security=True");
 
                     // Abrir ligação à Base de Dados
                     conn.Open();
