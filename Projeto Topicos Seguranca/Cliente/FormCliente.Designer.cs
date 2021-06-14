@@ -38,15 +38,16 @@ namespace Cliente
             this._labelComandos = new System.Windows.Forms.Label();
             this._labelComandoHoras = new System.Windows.Forms.Label();
             this._labelComandoData = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBoxMensagem
             // 
-            this.textBoxMensagem.Location = new System.Drawing.Point(13, 316);
-            this.textBoxMensagem.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.textBoxMensagem.Location = new System.Drawing.Point(17, 442);
+            this.textBoxMensagem.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.textBoxMensagem.Name = "textBoxMensagem";
             this.textBoxMensagem.PlaceholderText = "Escrever Mensagem";
-            this.textBoxMensagem.Size = new System.Drawing.Size(470, 23);
+            this.textBoxMensagem.Size = new System.Drawing.Size(603, 29);
             this.textBoxMensagem.TabIndex = 1;
             this.textBoxMensagem.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxMensagens_KeyPress);
             // 
@@ -56,10 +57,10 @@ namespace Cliente
             this.buttonEnviar.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonEnviar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.buttonEnviar.ForeColor = System.Drawing.Color.White;
-            this.buttonEnviar.Location = new System.Drawing.Point(50, 345);
-            this.buttonEnviar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.buttonEnviar.Location = new System.Drawing.Point(64, 483);
+            this.buttonEnviar.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonEnviar.Name = "buttonEnviar";
-            this.buttonEnviar.Size = new System.Drawing.Size(180, 30);
+            this.buttonEnviar.Size = new System.Drawing.Size(231, 42);
             this.buttonEnviar.TabIndex = 2;
             this.buttonEnviar.Text = "Enviar";
             this.buttonEnviar.UseVisualStyleBackColor = false;
@@ -71,10 +72,10 @@ namespace Cliente
             this.buttonSair.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.buttonSair.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.buttonSair.ForeColor = System.Drawing.Color.White;
-            this.buttonSair.Location = new System.Drawing.Point(303, 345);
-            this.buttonSair.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.buttonSair.Location = new System.Drawing.Point(390, 483);
+            this.buttonSair.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.buttonSair.Name = "buttonSair";
-            this.buttonSair.Size = new System.Drawing.Size(180, 30);
+            this.buttonSair.Size = new System.Drawing.Size(231, 42);
             this.buttonSair.TabIndex = 4;
             this.buttonSair.Text = "Sair";
             this.buttonSair.UseVisualStyleBackColor = false;
@@ -84,12 +85,12 @@ namespace Cliente
             // 
             this.listBoxChat.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.listBoxChat.FormattingEnabled = true;
-            this.listBoxChat.ItemHeight = 21;
-            this.listBoxChat.Location = new System.Drawing.Point(13, 12);
-            this.listBoxChat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.listBoxChat.ItemHeight = 28;
+            this.listBoxChat.Location = new System.Drawing.Point(17, 17);
+            this.listBoxChat.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.listBoxChat.Name = "listBoxChat";
             this.listBoxChat.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.listBoxChat.Size = new System.Drawing.Size(470, 298);
+            this.listBoxChat.Size = new System.Drawing.Size(603, 396);
             this.listBoxChat.TabIndex = 5;
             // 
             // openFileDialog
@@ -103,9 +104,10 @@ namespace Cliente
             this.panelFicheiros.BackgroundImage = global::Cliente.Properties.Resources.outline_attach_file_black_24dp;
             this.panelFicheiros.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.panelFicheiros.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.panelFicheiros.Location = new System.Drawing.Point(13, 345);
+            this.panelFicheiros.Location = new System.Drawing.Point(17, 483);
+            this.panelFicheiros.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panelFicheiros.Name = "panelFicheiros";
-            this.panelFicheiros.Size = new System.Drawing.Size(30, 30);
+            this.panelFicheiros.Size = new System.Drawing.Size(39, 42);
             this.panelFicheiros.TabIndex = 6;
             this.panelFicheiros.Click += new System.EventHandler(this.panelFicheiros_Click);
             // 
@@ -113,9 +115,10 @@ namespace Cliente
             // 
             this._labelComandos.AutoSize = true;
             this._labelComandos.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this._labelComandos.Location = new System.Drawing.Point(485, 9);
+            this._labelComandos.Location = new System.Drawing.Point(624, 13);
+            this._labelComandos.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this._labelComandos.Name = "_labelComandos";
-            this._labelComandos.Size = new System.Drawing.Size(87, 20);
+            this._labelComandos.Size = new System.Drawing.Size(112, 25);
             this._labelComandos.TabIndex = 7;
             this._labelComandos.Text = "Comandos:";
             // 
@@ -123,9 +126,10 @@ namespace Cliente
             // 
             this._labelComandoHoras.AutoSize = true;
             this._labelComandoHoras.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this._labelComandoHoras.Location = new System.Drawing.Point(485, 29);
+            this._labelComandoHoras.Location = new System.Drawing.Point(624, 41);
+            this._labelComandoHoras.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this._labelComandoHoras.Name = "_labelComandoHoras";
-            this._labelComandoHoras.Size = new System.Drawing.Size(49, 19);
+            this._labelComandoHoras.Size = new System.Drawing.Size(59, 23);
             this._labelComandoHoras.TabIndex = 8;
             this._labelComandoHoras.Text = "!Horas";
             // 
@@ -133,18 +137,31 @@ namespace Cliente
             // 
             this._labelComandoData.AutoSize = true;
             this._labelComandoData.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this._labelComandoData.Location = new System.Drawing.Point(485, 48);
+            this._labelComandoData.Location = new System.Drawing.Point(624, 67);
+            this._labelComandoData.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this._labelComandoData.Name = "_labelComandoData";
-            this._labelComandoData.Size = new System.Drawing.Size(42, 19);
+            this._labelComandoData.Size = new System.Drawing.Size(51, 23);
             this._labelComandoData.TabIndex = 9;
             this._labelComandoData.Text = "!Data";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label1.Location = new System.Drawing.Point(624, 90);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(57, 23);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "!Piada";
+            // 
             // FormCliente
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.ClientSize = new System.Drawing.Size(584, 391);
+            this.ClientSize = new System.Drawing.Size(751, 547);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this._labelComandoData);
             this.Controls.Add(this._labelComandoHoras);
             this.Controls.Add(this._labelComandos);
@@ -154,7 +171,7 @@ namespace Cliente
             this.Controls.Add(this.buttonEnviar);
             this.Controls.Add(this.textBoxMensagem);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormCliente";
@@ -176,5 +193,6 @@ namespace Cliente
         private System.Windows.Forms.Label _labelComandos;
         private System.Windows.Forms.Label _labelComandoHoras;
         private System.Windows.Forms.Label _labelComandoData;
+        private System.Windows.Forms.Label label1;
     }
 }

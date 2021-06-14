@@ -124,8 +124,15 @@ namespace Cliente
 
             if (!String.IsNullOrWhiteSpace(filePath))
             {
-                textBoxMensagem.Text = File.ReadAllText(filePath);
-                textBoxMensagem.Enabled = false;
+                try
+                {
+                    textBoxMensagem.Text = File.ReadAllText(filePath);
+                    textBoxMensagem.Enabled = false;
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
     }

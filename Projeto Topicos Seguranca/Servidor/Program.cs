@@ -86,14 +86,20 @@ namespace Servidor
 
                                 if (userMsg.StartsWith("!"))
                                 {
+                                    userMsg = userMsg.ToLower();
+
                                     switch (userMsg)
                                     {
-                                        case "!Horas":
+                                        case "!horas":
                                             response = DateTime.Now.ToString("HH:mm");
                                             break;
 
-                                        case "!Data":
+                                        case "!data":
                                             response = DateTime.Now.ToString("dd/MM/yyyy");
+                                            break;
+
+                                        case "!piada":
+                                            response = "\nComo se chama a neta do Super Mario?\nMarioneta";
                                             break;
 
                                         default:
